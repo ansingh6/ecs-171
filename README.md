@@ -17,3 +17,8 @@ Remember to add this unzipped folder to the directory while running code.
 
 ## Inference
 The inference notebook loads the saved models and makes predictions using them. It shows the exact value assigned by the model rather than a binary output.
+
+
+## front end
+https://streamlit.io/
+https://fastapi.tiangolo.com/lo/
