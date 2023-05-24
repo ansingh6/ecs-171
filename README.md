@@ -7,3 +7,6 @@ Contains code for a simple logistic regression model. The text is processed thro
 ## LLM
 LLM stands for Large-Language Model. We used different sizes of bert in order to train a model for text classification. The text is concatenated into one string and preprocessed. From there we use the pre-trained language model to perform our classification task.
 In order to load the saved model, it must be imported into the same directory as the other scripts. The saved models are not uploaded on github since they are very large and make things crash.
+
+## Inference
+The inference notebook loads the saved models and makes predictions using them. It shows the exact value assigned by the model rather than a binary output.
