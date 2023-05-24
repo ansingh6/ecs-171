@@ -1,9 +1,12 @@
 # ECS-171 Group 4 Final Project
 Classifying a job posting as real or fraudulent 
 
+## EDA
+Notebook to explore given data and all the attributes.
+
 ## Logreg notebook
 Contains code for a simple logistic regression model. The text is processed through tfidf and then passed into a logistic regression model along with other attributes.
-Not super exciting but I guess it's there.
+Pretty useless but I guess it's there.
 
 ## LLM (main model)
 LLM stands for Large-Language Model. We used different sizes of Bert in order to train a model for text classification. The text is concatenated into one string and preprocessed. From there we use the pre-trained language model to perform our classification task.
