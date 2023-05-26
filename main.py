@@ -26,7 +26,7 @@ def predict(job_post: JobPost):
         data = data.lower()
         data = data.replace('  ',' ')
         
-        # model inference
+        # model inferencee
         result = tf.sigmoid(model(tf.constant([data])))
         return {"fraud_probability": result.numpy().tolist()[0]}
     except Exception as e:
