@@ -21,8 +21,14 @@ def predictFunction(text):
 if 'exception' not in st.session_state:
     st.session_state.exception = False
 
-if 'profile_input' not in st.session_state:
-    st.session_state.profile_input = "..."
+if 'select_setting' not in st.session_state:
+    st.session_state.select_setting = True
+
+# read csv file for pandas
+postings = pd.read_csv('fake_job_postings.csv')
+
+# remove nan's
+postings = pd.DataFrame.dropna(postings)
 
 # title
 st.title("Fraudulent Job Posting Model")
@@ -33,25 +39,71 @@ dept_arr, country_arr = ['Accounting', 'Sales', 'Engineering', 'Marketing'], ["U
 # inputs
 # title, department, company profile, etc.
 
-title = st.text_input('Title', placeholder="Write the job title here")
-if not title or title.isspace():
-    st.error("Can't input an empty value, try again!", icon="🚨")
+setting = st.radio("Choose either text input or option selection: ", ('User Input', 'Selection'))
+if setting == "User Input":
+    st.session_state.select_setting = False
+else:
+    st.session_state.select_setting = True
 
-profile = st.text_input('Company Profile', placeholder='Insert the company profile here')
-if not profile or profile.isspace():
-    st.error("Can't input an empty value, try again!", icon="🚨")
+if st.session_state.select_setting:
+    title_arr, profile_arr = np.array(postings["title"]), np.array(postings["company_profile"])
+    desc_arr, benefit_arr = np.array(postings["description"]), np.array(postings["benefits"])
+    req_arr, city_arr = np.array(postings["requirements"]), np.array(postings["location"])
 
-desc = st.text_input('Description', placeholder="Write the job description here")
-if not desc or desc.isspace():
-    st.error("Can't input an empty value, try again!", icon="🚨")
+    title = st.selectbox(
+        label = 'Title',
+        options = title_arr
+    )
 
-req = st.text_input('Requirements', placeholder="List the job requirements")
-if not req or req.isspace():
-    st.error("Can't input an empty value, try again!", icon="🚨")
+    profile = st.selectbox(
+        label = 'Profile',
+        options = profile_arr
+    )
 
-benefit = st.text_input('Benefits', placeholder="List benefits here")
-if not benefit or benefit.isspace():
-    st.error("Can't input an empty value, try again!", icon="🚨")
+    desc = st.selectbox(
+        label = 'Description',
+        options = desc_arr
+    )
+
+    req = st.selectbox(
+        label = 'Requirements',
+        options = req_arr
+    )        
+
+    benefit = st.selectbox(
+        label = 'Benefits',
+        options = benefit_arr
+    )
+
+    city = st.selectbox(
+        label = 'City',
+        options = city_arr
+    )
+
+else: 
+    title = st.text_input('Title', placeholder="Write the job title here")
+    if not title or title.isspace():
+        st.error("Can't input an empty value, try again!", icon="🚨")
+
+    profile = st.text_input('Company Profile', placeholder='Insert the company profile here')
+    if not profile or profile.isspace():
+        st.error("Can't input an empty value, try again!", icon="🚨")
+
+    desc = st.text_input('Description', placeholder="Write the job description here")
+    if not desc or desc.isspace():
+        st.error("Can't input an empty value, try again!", icon="🚨")
+
+    req = st.text_input('Requirements', placeholder="List the job requirements")
+    if not req or req.isspace():
+        st.error("Can't input an empty value, try again!", icon="🚨")
+
+    benefit = st.text_input('Benefits', placeholder="List benefits here")
+    if not benefit or benefit.isspace():
+        st.error("Can't input an empty value, try again!", icon="🚨")
+
+    city = st.text_input('City', placeholder="City within selected country")
+    if not city or city.isspace():
+        st.error("Can't input an empty value, try again!", icon="🚨")
 
 department = st.selectbox(
     label = 'Job department',
@@ -63,15 +115,12 @@ country = st.selectbox(
     options = country_arr
 )
 
-city = st.text_input('City', placeholder="City within selected country")
-if not city or city.isspace():
-    st.error("Can't input an empty value, try again!", icon="🚨")
-
 feature_arr = [title, profile, desc, req, benefit, department, country, city]
 
 for feat in feature_arr:
     if not feat or feat.isspace():
         st.session_state.exception = True
+        st.error("No empty values allowed!")
         break
     else:
         st.session_state.exception = False
