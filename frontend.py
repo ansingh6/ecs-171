@@ -1,8 +1,6 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-import tensorflow as tf
-import tensorflow_text as text
 import json
 import requests
 
@@ -29,12 +27,10 @@ postings = pd.read_csv('fake_job_postings.csv')
 
 # remove nan's
 postings = pd.DataFrame.dropna(postings)
+postings = postings.head(10)
 
 # title
 st.title("Fraudulent Job Posting Model")
-
-# arrays for selectboxes
-dept_arr, country_arr = ['Accounting', 'Sales', 'Engineering', 'Marketing'], ["United States of America", "Afghanistan","Albania","Algeria","Andorra","Angola","Anguilla","Antigua & Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bermuda","Bhutan","Bolivia","Bosnia &amp; Herzegovina","Botswana","Brazil","British Virgin Islands","Brunei","Bulgaria","Burkina Faso","Burundi","Cambodia","Cameroon","Cape Verde","Cayman Islands","Chad","Chile","China","Colombia","Congo","Cook Islands","Costa Rica","Cote D Ivoire","Croatia","Cruise Ship","Cuba","Cyprus","Czech Republic","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Estonia","Ethiopia","Falkland Islands","Faroe Islands","Fiji","Finland","France","French Polynesia","French West Indies","Gabon","Gambia","Georgia","Germany","Ghana","Gibraltar","Greece","Greenland","Grenada","Guam","Guatemala","Guernsey","Guinea","Guinea Bissau","Guyana","Haiti","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Isle of Man","Israel","Italy","Jamaica","Japan","Jersey","Jordan","Kazakhstan","Kenya","Kuwait","Kyrgyz Republic","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macau","Macedonia","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Mauritania","Mauritius","Mexico","Moldova","Monaco","Mongolia","Montenegro","Montserrat","Morocco","Mozambique","Namibia","Nepal","Netherlands","Netherlands Antilles","New Caledonia","New Zealand","Nicaragua","Niger","Nigeria","Norway","Oman","Pakistan","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Puerto Rico","Qatar","Reunion","Romania","Russia","Rwanda","Saint Pierre &amp; Miquelon","Samoa","San Marino","Satellite","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","South Africa","South Korea","Spain","Sri Lanka","St Kitts &amp; Nevis","St Lucia","St Vincent","St. Lucia","Sudan","Suriname","Swaziland","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor L'Este","Togo","Tonga","Trinidad &amp; Tobago","Tunisia","Turkey","Turkmenistan","Turks &amp; Caicos","Uganda","Ukraine","United Arab Emirates","United Kingdom","Uruguay","Uzbekistan","Venezuela","Vietnam","Virgin Islands (US)","Yemen","Zambia","Zimbabwe"]
 
 # inputs
 # title, department, company profile, etc.
@@ -48,7 +44,13 @@ else:
 if st.session_state.select_setting:
     title_arr, profile_arr = np.array(postings["title"]), np.array(postings["company_profile"])
     desc_arr, benefit_arr = np.array(postings["description"]), np.array(postings["benefits"])
-    req_arr, city_arr = np.array(postings["requirements"]), np.array(postings["location"])
+    req_arr, location_arr = np.array(postings["requirements"]), np.array(postings["location"])
+    dept_arr = np.array(postings["department"])
+
+    title_arr, profile_arr = np.insert(title_arr, 0, ""), np.insert(profile_arr, 0, "")
+    desc_arr, benefit_arr = np.insert(desc_arr, 0, ""), np.insert(benefit_arr, 0, "")
+    req_arr, location_arr = np.insert(req_arr, 0, ""), np.insert(location_arr, 0, "")
+    dept_arr = np.insert(dept_arr, 0, "")
 
     title = st.selectbox(
         label = 'Title',
@@ -75,47 +77,45 @@ if st.session_state.select_setting:
         options = benefit_arr
     )
 
-    city = st.selectbox(
-        label = 'City',
-        options = city_arr
+    department = st.selectbox(
+        label = 'Job department',
+        options = dept_arr
+    )
+
+    location = st.selectbox(
+        label = 'Location',
+        options = location_arr
     )
 
 else: 
     title = st.text_input('Title', placeholder="Write the job title here")
-    if not title or title.isspace():
-        st.error("Can't input an empty value, try again!", icon="🚨")
+    # if not title or title.isspace():
+    #     st.error("Can't input an empty value, try again!", icon="🚨")
 
     profile = st.text_input('Company Profile', placeholder='Insert the company profile here')
-    if not profile or profile.isspace():
-        st.error("Can't input an empty value, try again!", icon="🚨")
+    # if not profile or profile.isspace():
+    #     st.error("Can't input an empty value, try again!", icon="🚨")
 
     desc = st.text_input('Description', placeholder="Write the job description here")
-    if not desc or desc.isspace():
-        st.error("Can't input an empty value, try again!", icon="🚨")
+    # if not desc or desc.isspace():
+    #     st.error("Can't input an empty value, try again!", icon="🚨")
 
     req = st.text_input('Requirements', placeholder="List the job requirements")
-    if not req or req.isspace():
-        st.error("Can't input an empty value, try again!", icon="🚨")
+    # if not req or req.isspace():
+    #     st.error("Can't input an empty value, try again!", icon="🚨")
 
     benefit = st.text_input('Benefits', placeholder="List benefits here")
-    if not benefit or benefit.isspace():
-        st.error("Can't input an empty value, try again!", icon="🚨")
+    # if not benefit or benefit.isspace():
+    #     st.error("Can't input an empty value, try again!", icon="🚨")
+  
+    department = st.text_input('Department', placeholder="List the job department")
 
-    city = st.text_input('City', placeholder="City within selected country")
-    if not city or city.isspace():
-        st.error("Can't input an empty value, try again!", icon="🚨")
+    location = st.text_input('Location', placeholder="Choose location")
+    # if not city or city.isspace():
+    #     st.error("Can't input an empty value, try again!", icon="🚨")
 
-department = st.selectbox(
-    label = 'Job department',
-    options = dept_arr
-)
 
-country = st.selectbox(
-    label = 'Country',
-    options = country_arr
-)
-
-feature_arr = [title, profile, desc, req, benefit, department, country, city]
+feature_arr = [title, profile, desc, req, benefit, department, location]
 
 for feat in feature_arr:
     if not feat or feat.isspace():
@@ -126,7 +126,8 @@ for feat in feature_arr:
         st.session_state.exception = False
 
 if not st.session_state.exception:
-    combined_text = " ".join([profile, title, desc, department, req, benefit, country, city]) # concatenate
+    combined_text = " ".join([profile, title, desc, department, req, benefit, location]) # concatenate
+    # st.write(combined_text)
     text_dict = {
         "text": combined_text
     }
