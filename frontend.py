@@ -11,9 +11,9 @@ def predictFunction(text):
     st.write("Fraud probability: ", output["fraud_probability"][0])
 
     if (output["fraud_probability"][0] > 0.5):
-        st.write("Fraud classification: True")
+        st.markdown("Fraud classification: **:red[True]**")
     else:
-        st.write("Fraud classification: False")
+        st.markdown("Fraud classification: **:green[False]**")
 
 # set state when input is disabled
 if 'exception' not in st.session_state:
@@ -24,13 +24,14 @@ if 'select_setting' not in st.session_state:
 
 # read csv file for pandas
 postings = pd.read_csv('fake_job_postings.csv')
+fraud_row = postings.iloc[843]
 
 # remove nan's
 postings = pd.DataFrame.dropna(postings)
 postings = postings.head(10)
 
 # title
-st.title("Fraudulent Job Posting Model")
+st.title("Fraudulent Job Predictor")
 
 # inputs
 # title, department, company profile, etc.
@@ -47,10 +48,17 @@ if st.session_state.select_setting:
     req_arr, location_arr = np.array(postings["requirements"]), np.array(postings["location"])
     dept_arr = np.array(postings["department"])
 
+    # prepend arrays with empty strings
     title_arr, profile_arr = np.insert(title_arr, 0, ""), np.insert(profile_arr, 0, "")
     desc_arr, benefit_arr = np.insert(desc_arr, 0, ""), np.insert(benefit_arr, 0, "")
     req_arr, location_arr = np.insert(req_arr, 0, ""), np.insert(location_arr, 0, "")
     dept_arr = np.insert(dept_arr, 0, "")
+
+    # add a fraudulent posting
+    title_arr, profile_arr = np.insert(title_arr, title_arr.size, fraud_row["title"]), np.insert(profile_arr, profile_arr.size, fraud_row["company_profile"])
+    desc_arr, benefit_arr = np.insert(desc_arr, desc_arr.size, fraud_row["description"]), np.insert(benefit_arr, benefit_arr.size, fraud_row["benefits"])
+    req_arr, location_arr = np.insert(req_arr, req_arr.size, fraud_row["requirements"]), np.insert(location_arr, location_arr.size, fraud_row["location"])
+    dept_arr = np.insert(dept_arr, dept_arr.size, fraud_row["department"])
 
     title = st.selectbox(
         label = 'Title',
@@ -89,30 +97,12 @@ if st.session_state.select_setting:
 
 else: 
     title = st.text_input('Title', placeholder="Write the job title here")
-    # if not title or title.isspace():
-    #     st.error("Can't input an empty value, try again!", icon="🚨")
-
     profile = st.text_input('Company Profile', placeholder='Insert the company profile here')
-    # if not profile or profile.isspace():
-    #     st.error("Can't input an empty value, try again!", icon="🚨")
-
     desc = st.text_input('Description', placeholder="Write the job description here")
-    # if not desc or desc.isspace():
-    #     st.error("Can't input an empty value, try again!", icon="🚨")
-
     req = st.text_input('Requirements', placeholder="List the job requirements")
-    # if not req or req.isspace():
-    #     st.error("Can't input an empty value, try again!", icon="🚨")
-
     benefit = st.text_input('Benefits', placeholder="List benefits here")
-    # if not benefit or benefit.isspace():
-    #     st.error("Can't input an empty value, try again!", icon="🚨")
-  
     department = st.text_input('Department', placeholder="List the job department")
-
     location = st.text_input('Location', placeholder="Choose location")
-    # if not city or city.isspace():
-    #     st.error("Can't input an empty value, try again!", icon="🚨")
 
 
 feature_arr = [title, profile, desc, req, benefit, department, location]
