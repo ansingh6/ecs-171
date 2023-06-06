@@ -87,4 +87,4 @@ streamlit run frontend.py
 ```
 which will then pop up a new tab in your browser showing the frontend itself. If this does not occur, navigate to localhost:8501 and check to see if the interface has popped up.
 
-It is important to note that for each modification to the frontend code, the API will reload each time and you will have to wait some time for it to restart before being able to use the full frontend again.
+It is important to note that for each modification to the frontend code, the API will reload each time and you will have to wait some time for it to restart before being able to run the full demo again.
