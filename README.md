@@ -2,7 +2,17 @@
 Classifying a job posting as real or fraudulent 
 
 ## EDA
-Notebook to explore given data and all the attributes.
+The Exploratory Data Analysis (EDA) of the project provides a comprehensive understanding of the data's main characteristics. Here are some key insights from the EDA:
+
+Industry Distribution: The data spans across various industries, with the top three being 'Information Technology and Services', 'Computer Software', and 'Internet'. Other industries include 'Marketing and Advertising', 'Education Management', and more.
+
+Function Distribution: The data also covers a wide range of job functions. The top three functions are 'Information Technology', 'Sales', and 'Engineering'. Other functions include 'Customer Service', 'Marketing', 'Administrative', 'Design', 'Health Care Provider', and more.
+
+Data Cleaning and Processing: The EDA also involves data cleaning and processing. For instance, the 'industry' field was cleaned and processed into a corpus for further analysis.
+
+Job Details: The data includes detailed information about each job, such as the department, salary range, company profile, job description, requirements, benefits, and employment type.
+
+Most Common Requirements: The EDA also identified the most common requirements across all jobs.
 
 ## Logreg notebook
 Contains code for a simple logistic regression model. The text is processed through tfidf and then passed into a logistic regression model along with other attributes.
