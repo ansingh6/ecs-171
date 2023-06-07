@@ -16,7 +16,7 @@ Most Common Requirements: The EDA also identified the most common requirements a
 
 ## Logreg notebook
 Contains code for a simple logistic regression model. The text is processed through tfidf and then passed into a logistic regression model along with other attributes.
-Pretty useless but I guess it's there.
+Used for exploring the data and getting preliminary results.
 
 ## LLM (main model)
 LLM stands for Large-Language Model. We used different sizes of Bert in order to train a model for text classification. The text is concatenated into one string and preprocessed. From there we use the pre-trained language model to perform our classification task.
